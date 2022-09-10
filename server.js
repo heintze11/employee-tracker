@@ -175,6 +175,16 @@ function addRole() {
 
 function addEmployee() {
     console.log('add employee');
+    inquirer.prompt(addEmp)
+        .then(function (data) {
+            console.log(data.firstName);
+            const sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ("${data.firstName}", "${data.lastName}", ${data.roleId}, ${data.managerId});`;
+            db.query(sql, (err, results) => {
+                if (err) throw err;
+                console.log("1 record inserted");
+                start();
+        })
+    })
 };
 
 function updateRole() {
