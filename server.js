@@ -114,6 +114,7 @@ function choices(option) {
         updateRole();
     } else {
         console.log ('Finished!')
+        finished();
     }
 };
 
@@ -136,7 +137,7 @@ function postRoles() {
 };
 
 function postEmployees() {
-    const sql = 'SELECT employees.id, first_name, last_name, role.title AS role, departments.name AS department, salary, manager_id FROM employees JOIN role ON role_id = role.id JOIN departments ON department_id = departments.id;';
+    const sql = 'SELECT employees.id, first_name, last_name, role.title AS role, departments.name AS department, salary, manager_id FROM employees JOIN role ON role_id = role.id JOIN departments ON department_id = departments.id ORDER BY employees.id;';
     db.query(sql, (err, results) => {
         if (err) throw err;
         console.table(results);
@@ -158,6 +159,13 @@ function addEmployee() {
 
 function updateRole() {
     console.log('update role');
+};
+
+// Need to fix - trying to exit sql when finished
+function finished() {
+    db.query('exit', (err, results) => {
+        if (err) throw err;
+    })
 };
 
 start();
