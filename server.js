@@ -128,7 +128,7 @@ function postDepartments() {
 };
 
 function postRoles() {
-    const sql = 'SELECT title, role.id AS role_id, departments.name AS department_name, salary FROM role JOIN departments ON role.department_id = departments.id;';
+    const sql = 'SELECT title, role.id, departments.name AS department_name, salary FROM role JOIN departments ON role.department_id = departments.id ORDER BY role.id;';
     db.query(sql, (err, results) => {
         if (err) throw err;
         console.table(results);
@@ -147,6 +147,18 @@ function postEmployees() {
 
 function addDepartment() {
     console.log('add department');
+    inquirer.prompt(addDep)
+        .then(function (data) {
+            console.log(data.name);
+            const sql = "INSERT INTO departments (name) VALUES (" + data.name + ");";
+            db.query(sql, (err, results) => {
+                if (err) throw err;
+                console.table(results);
+                start();
+        })
+    
+    
+    })
 };
 
 function addRole() {
