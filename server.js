@@ -36,6 +36,54 @@ const options = [{
     choices: ['View Departments', 'View Roles', 'View Employees', 'Add Department', 'Add Role', 'Add Employee', 'Update Employee Role', 'Finished'],
     name: 'option'
 }];
+
+const addDep = [{
+    type: 'input',
+    message: 'What is the department name?',
+    name: 'name'
+}]
+
+const addRol = [{
+    type: 'input',
+    message: 'What is the role title?',
+    name: 'title'
+}, {
+    type: 'number',
+    message: 'What is the role salary?',
+    name: 'salary'
+}, {
+    type: 'number',
+    message: 'What is the department id?',
+    name: 'departmentId'
+}]
+
+const addEmp = [{
+    type: 'input',
+    message: "What is the employee's first name?",
+    name: 'firstName'
+}, {
+    type: 'input',
+    message: "What is the employee's last name?",
+    name: 'lastName'
+}, {
+    type: 'number',
+    message: "What is the employee's role ID?",
+    name: 'roleId'
+}, {
+    type: 'number',
+    message: "What is the employee's manager's ID?",
+    name: 'managerId'
+}]
+
+const updateRol = [{
+    type: 'number',
+    message: "What is the employee's ID number?",
+    name: 'employeeId'
+}, {
+    type: 'number',
+    message: "What is the new employee's role number?",
+    name: 'roleId'
+}]
 // inquire to determine next steps
 // connect options to queries
 function start() {
