@@ -1,8 +1,8 @@
 // Install dependencies
-    // Express
-    // Inquirer 8.2.4
-    // mysql2
-    // Console.table
+// Express
+// Inquirer 8.2.4
+// mysql2
+// Console.table
 // Create Database
 // Seed Database
 // Use inquirer to select from query options
@@ -12,7 +12,7 @@
 const express = require('express');
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
-const e = require('express');
+const cTable = require('console.table');
 // port
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -22,59 +22,94 @@ app.use(express.json());
 // connect to database
 const db = mysql.createConnection(
     {
-      host: 'localhost',
-      user: 'root',
-      password: 'otisroot',
-      database: 'business_db'
+        host: 'localhost',
+        user: 'root',
+        password: 'otisroot',
+        database: 'business_db'
     },
     console.log(`Connected to the business_db database.`)
-  );
+);
 
 const options = [{
-    type: "list",
-    message: "What would you like to do?",
-    choices: ["View Departments", "View Roles", "View Employees", "Add Department", "Add Role", "Add Employee", "Update Employee Role", ],
-    name: "option"
+    type: 'list',
+    message: 'What would you like to do?',
+    choices: ['View Departments', 'View Roles', 'View Employees', 'Add Department', 'Add Role', 'Add Employee', 'Update Employee Role', 'Finished'],
+    name: 'option'
 }];
 // inquire to determine next steps
 // connect options to queries
-
+function start() {
+    inquirer.prompt(options)
+        .then(function (data) {
+            console.log(data);
+            choices(data.option);
+        })
+};
 
 
 // create if statement to match selection
-function choices (option){
+function choices(option) {
     console.log(option);
-    if(option === "View Departments"){
+    if (option === 'View Departments') {
         postDepartments();
-    } else if (option === "View Roles"){
+    } else if (option === 'View Roles') {
         postRoles();
-    } else if (option === "View Employees"){
+    } else if (option === 'View Employees') {
         postEmployees();
+    } else if (option === 'Add Department') {
+        addDepartment();
+    } else if (option === 'Add Role') {
+        addRole();
+    } else if (option === 'Add Employee') {
+        addEmployee();
+    } else if (option === 'Update Employee Role') {
+        updateRole();
     } else {
-        return console.log("next steps")
+        console.log ('Finished!')
     }
 };
 
-function postDepartments(){
-    console.log("show departments");
-};
-
-function postRoles(){
-    console.log("show roles");
-};
-
-function postEmployees(){
-    console.log("show employees");
-};
-
-
-
-function start() {
-    inquirer.prompt(options)
-    .then(function (data) {
-        console.log (data);
-        choices(data.option);
+function postDepartments() {
+    const sql = 'SELECT * FROM departments;';
+    db.query(sql, (err, results) => {
+        if (err) throw err;
+        console.table(results);
+        start();
     })
+};
+
+function postRoles() {
+    const sql = 'SELECT title, role.id AS role_id, departments.name AS department_name, salary FROM role JOIN departments ON role.department_id = departments.id;';
+    db.query(sql, (err, results) => {
+        if (err) throw err;
+        console.table(results);
+        start();
+    })
+};
+
+function postEmployees() {
+    const sql = 'SELECT employees.id, first_name, last_name, role.title AS role, departments.name AS department, salary, manager_id FROM employees JOIN role ON role_id = role.id JOIN departments ON department_id = departments.id;';
+    db.query(sql, (err, results) => {
+        if (err) throw err;
+        console.table(results);
+        start();
+    })
+};
+
+function addDepartment() {
+    console.log('add department');
+};
+
+function addRole() {
+    console.log('add role');
+};
+
+function addEmployee() {
+    console.log('add employee');
+};
+
+function updateRole() {
+    console.log('update role');
 };
 
 start();
