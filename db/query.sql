@@ -19,3 +19,4 @@ INSERT INTO role (title, salary, department_id) VALUES (data.title, data.salary,
 INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (data.firstName, data.lastName, data.roleId, data.managerId);
 
 -- change employee role
+UPDATE employees SET role_id = data.roleId WHERE id = data.employeeId;

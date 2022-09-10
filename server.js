@@ -189,6 +189,16 @@ function addEmployee() {
 
 function updateRole() {
     console.log('update role');
+    inquirer.prompt(updateRol)
+        .then(function (data) {
+            console.log(data.firstName);
+            const sql = `UPDATE employees SET role_id = ${data.roleId} WHERE id = ${data.employeeId};`;
+            db.query(sql, (err, results) => {
+                if (err) throw err;
+                console.log("1 record updated");
+                start();
+        })
+    })
 };
 
 // Need to fix - trying to exit sql when finished
