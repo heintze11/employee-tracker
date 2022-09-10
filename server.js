@@ -161,6 +161,16 @@ function addDepartment() {
 
 function addRole() {
     console.log('add role');
+    inquirer.prompt(addRol)
+        .then(function (data) {
+            console.log(data.title);
+            const sql = `INSERT INTO role (title, salary, department_id) VALUES ("${data.title}", ${data.salary}, ${data.departmentId});`;
+            db.query(sql, (err, results) => {
+                if (err) throw err;
+                console.log("1 record inserted");
+                start();
+        })
+    })
 };
 
 function addEmployee() {
