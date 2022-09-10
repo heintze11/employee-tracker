@@ -150,14 +150,12 @@ function addDepartment() {
     inquirer.prompt(addDep)
         .then(function (data) {
             console.log(data.name);
-            const sql = "INSERT INTO departments (name) VALUES (" + data.name + ");";
+            const sql = "INSERT INTO departments (name) VALUES ('" + data.name + "');";
             db.query(sql, (err, results) => {
                 if (err) throw err;
-                console.table(results);
+                console.log("1 record inserted");
                 start();
         })
-    
-    
     })
 };
 
