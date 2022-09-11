@@ -29,20 +29,20 @@ const db = mysql.createConnection(
     },
     console.log(`Connected to the business_db database.`)
 );
-
+// default inquirer options
 const options = [{
     type: 'list',
     message: 'What would you like to do?',
     choices: ['View Departments', 'View Roles', 'View Employees', 'Add Department', 'Add Role', 'Add Employee', 'Update Employee Role', 'Finished'],
     name: 'option'
 }];
-
+// add department questions
 const addDep = [{
     type: 'input',
     message: 'What is the department name?',
     name: 'name'
 }]
-
+// add role questions
 const addRol = [{
     type: 'input',
     message: 'What is the role title?',
@@ -56,7 +56,7 @@ const addRol = [{
     message: 'What is the department id?',
     name: 'departmentId'
 }]
-
+// add employee questions
 const addEmp = [{
     type: 'input',
     message: "What is the employee's first name?",
@@ -67,15 +67,15 @@ const addEmp = [{
     name: 'lastName'
 }, {
     type: 'number',
-    message: "What is the employee's role ID?",
+    message: "What is the employee's role ID #?",
     name: 'roleId'
 }, {
     type: 'input',
-    message: "What is the employee's manager's ID?",
+    message: "What is the employee's manager's ID #?",
     name: 'managerId',
     default: 'NULL'
 }]
-
+// update role questions
 const updateRol = [{
     type: 'number',
     message: "What is the employee's ID number?",
@@ -85,6 +85,7 @@ const updateRol = [{
     message: "What is the new employee's role number?",
     name: 'roleId'
 }]
+
 // inquire to determine next steps
 // connect options to queries
 function start() {
@@ -117,7 +118,7 @@ function choices(option) {
         finished();
     }
 };
-
+// post departments query function
 function postDepartments() {
     const sql = 'SELECT * FROM departments;';
     db.query(sql, (err, results) => {
@@ -126,7 +127,7 @@ function postDepartments() {
         start();
     })
 };
-
+// post roles query function
 function postRoles() {
     const sql = 'SELECT title, role.id, departments.name AS department_name, salary FROM role JOIN departments ON role.department_id = departments.id ORDER BY role.id;';
     db.query(sql, (err, results) => {
@@ -135,16 +136,16 @@ function postRoles() {
         start();
     })
 };
-
+// post employees query function
 function postEmployees() {
-    const sql = 'SELECT employees.id, first_name, last_name, role.title AS role, departments.name AS department, salary, manager_id FROM employees JOIN role ON role_id = role.id JOIN departments ON department_id = departments.id ORDER BY employees.id;';
+    const sql = 'SELECT e.id, e.first_name, e.last_name, role.title AS role, departments.name AS department, salary, m.first_name AS manager FROM employees e JOIN employees m ON e.manager_id = m.id JOIN role ON e.role_id = role.id JOIN departments ON department_id = departments.id ORDER BY id;';
     db.query(sql, (err, results) => {
         if (err) throw err;
         console.table(results);
         start();
     })
 };
-
+// add department query function
 function addDepartment() {
     console.log('Add a new department');
     inquirer.prompt(addDep)
@@ -160,7 +161,7 @@ function addDepartment() {
         })
     })
 };
-
+// add role query function
 function addRole() {
     console.log('Add a new role');
     inquirer.prompt(addRol)
@@ -176,7 +177,7 @@ function addRole() {
         })
     })
 };
-
+// add employee query function
 function addEmployee() {
     console.log('Add a new employee');
     inquirer.prompt(addEmp)
@@ -192,7 +193,7 @@ function addEmployee() {
         })
     })
 };
-
+// update employee role function
 function updateRole() {
     console.log('Update an employee role');
     inquirer.prompt(updateRol)
@@ -209,9 +210,7 @@ function updateRole() {
     })
 };
 
-// Function to pull employees into array 
-
-// Need to fix - trying to exit sql when finished
+// simple finished function - doesn't call inquirer again
 function finished() {
     console.log('------------');
     console.log('Finished! Control+C to exit');
