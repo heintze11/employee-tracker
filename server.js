@@ -70,9 +70,10 @@ const addEmp = [{
     message: "What is the employee's role ID?",
     name: 'roleId'
 }, {
-    type: 'number',
+    type: 'input',
     message: "What is the employee's manager's ID?",
-    name: 'managerId'
+    name: 'managerId',
+    default: 'NULL'
 }]
 
 const updateRol = [{
@@ -170,7 +171,7 @@ function addRole() {
             db.query(sql, (err, results) => {
                 if (err) throw err;
                 console.log('------------');
-                console.log(`${data.title} role added to ${data.department} department`);
+                console.log(`${data.title} role added to ${data.departmentId} department`);
                 console.log('------------');
                 start();
         })
@@ -201,7 +202,9 @@ function updateRole() {
             const sql = `UPDATE employees SET role_id = ${data.roleId} WHERE id = ${data.employeeId};`;
             db.query(sql, (err, results) => {
                 if (err) throw err;
-                console.log("1 record updated");
+                console.log('------------');
+                console.log(`Employee # ${data.employeeId} role changed to ${data.roleId}`);
+                console.log('------------');
                 start();
         })
     })
