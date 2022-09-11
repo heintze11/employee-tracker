@@ -9,16 +9,12 @@
 // Use console.table to show results...?
 
 // dependencies
-const express = require('express');
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const cTable = require('console.table');
 // port
 const PORT = process.env.PORT || 3001;
-const app = express();
-// express middleware
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+
 // connect to database
 const db = mysql.createConnection(
     {
@@ -57,34 +53,10 @@ const addRol = [{
     name: 'departmentId'
 }]
 // add employee questions
-// const addEmp = [{
-//     type: 'input',
-//     message: "What is the employee's first name?",
-//     name: 'firstName'
-// }, {
-//     type: 'input',
-//     message: "What is the employee's last name?",
-//     name: 'lastName'
-// }, {
-//     type: 'number',
-//     message: "What is the employee's role ID #?",
-//     name: 'roleId'
-// }, {
-//     type: 'input',
-//     message: "What is the employee's manager's ID #?",
-//     name: 'managerId',
-//     default: 'NULL'
-// }]
+// moved inside function to be dynamic
+
 // update role questions
-const updateRol = [{
-    type: 'number',
-    message: "What is the employee's ID number?",
-    name: 'employeeId'
-}, {
-    type: 'number',
-    message: "What is the new employee's role number?",
-    name: 'roleId'
-}]
+// moved inside function to be dynamic
 
 // inquire to determine next steps
 // connect options to queries
@@ -94,7 +66,6 @@ function start() {
             choices(data.option);
         })
 };
-
 
 // create if statement to match selection
 function choices(option) {
@@ -213,8 +184,6 @@ function addEmployee() {
             const roleQuery = `SELECT id FROM role WHERE title = "${data.title}"`;
             db.query(roleQuery, (err, results) => {
                 if (err) throw err;
-                console.log(results);
-                console.log(results[0].id);
             const sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ("${data.firstName}", "${data.lastName}", ${results[0].id}, ${data.managerId});`;
             db.query(sql, (err, results) => {
                 if (err) throw err;
@@ -230,7 +199,15 @@ function addEmployee() {
 // update employee role function
 function updateRole() {
     console.log('Update an employee role');
-    inquirer.prompt(updateRol)
+    inquirer.prompt([{
+        type: 'number',
+        message: "What is the employee's ID number?",
+        name: 'employeeId'
+    }, {
+        type: 'number',
+        message: "What is the new employee's role number?",
+        name: 'roleId'
+    }])
         .then(function (data) {
             console.log(data.firstName);
             const sql = `UPDATE employees SET role_id = ${data.roleId} WHERE id = ${data.employeeId};`;
