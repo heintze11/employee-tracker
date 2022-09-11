@@ -7,8 +7,12 @@ SELECT title, role.id, departments.name AS department_name, salary
 FROM role JOIN departments ON role.department_id = departments.id ORDER BY role.id;
 
 -- employee request
+SELECT employees.id, first_name, last_name, role.title AS role, departments.name AS department, salary, manager_id 
+FROM employees JOIN role ON role_id = role.id JOIN departments ON department_id = departments.id ORDER BY employees.id;
+
+-- employee request - Manager name 
 SELECT e.id, e.first_name, e.last_name, role.title AS role, departments.name AS department, salary, m.first_name AS manager
-FROM employees e JOIN employees m ON e.manager_id = m.id JOIN role ON e.role_id = role.id JOIN departments ON department_id = departments.id ORDER BY id;
+FROM employees e LEFT OUTER JOIN employees m ON e.manager_id = m.id JOIN role ON e.role_id = role.id JOIN departments ON department_id = departments.id ORDER BY id;
 
 -- add department
 INSERT INTO departments (name) VALUES (data.name);

@@ -138,7 +138,7 @@ function postRoles() {
 };
 // post employees query function
 function postEmployees() {
-    const sql = 'SELECT e.id, e.first_name, e.last_name, role.title AS role, departments.name AS department, salary, m.first_name AS manager FROM employees e JOIN employees m ON e.manager_id = m.id JOIN role ON e.role_id = role.id JOIN departments ON department_id = departments.id ORDER BY id;';
+    const sql = 'SELECT e.id, e.first_name, e.last_name, role.title AS role, departments.name AS department, salary, m.first_name AS manager FROM employees e LEFT OUTER JOIN employees m ON e.manager_id = m.id JOIN role ON e.role_id = role.id JOIN departments ON department_id = departments.id ORDER BY id;';
     db.query(sql, (err, results) => {
         if (err) throw err;
         console.table(results);
