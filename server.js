@@ -90,7 +90,6 @@ const updateRol = [{
 function start() {
     inquirer.prompt(options)
         .then(function (data) {
-            console.log(data);
             choices(data.option);
         })
 };
@@ -98,7 +97,8 @@ function start() {
 
 // create if statement to match selection
 function choices(option) {
-    console.log(option);
+    //Add space before next function call
+    console.log("");
     if (option === 'View Departments') {
         postDepartments();
     } else if (option === 'View Roles') {
@@ -114,7 +114,6 @@ function choices(option) {
     } else if (option === 'Update Employee Role') {
         updateRole();
     } else {
-        console.log ('Finished!')
         finished();
     }
 };
@@ -147,7 +146,7 @@ function postEmployees() {
 };
 
 function addDepartment() {
-    console.log('add department');
+    console.log('Add a new department');
     inquirer.prompt(addDep)
         .then(function (data) {
             console.log(data.name);
@@ -163,7 +162,7 @@ function addDepartment() {
 };
 
 function addRole() {
-    console.log('add role');
+    console.log('Add a new role');
     inquirer.prompt(addRol)
         .then(function (data) {
             console.log(data.title);
@@ -179,7 +178,7 @@ function addRole() {
 };
 
 function addEmployee() {
-    console.log('add employee');
+    console.log('Add a new employee');
     inquirer.prompt(addEmp)
         .then(function (data) {
             console.log(data.firstName);
@@ -195,7 +194,7 @@ function addEmployee() {
 };
 
 function updateRole() {
-    console.log('update role');
+    console.log('Update an employee role');
     inquirer.prompt(updateRol)
         .then(function (data) {
             console.log(data.firstName);
@@ -214,9 +213,9 @@ function updateRole() {
 
 // Need to fix - trying to exit sql when finished
 function finished() {
-    db.query('exit', (err, results) => {
-        if (err) throw err;
-    })
+    console.log('------------');
+    console.log('Finished! Control+C to exit');
+    console.log('------------');
 };
 
 start();
