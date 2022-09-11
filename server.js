@@ -57,24 +57,24 @@ const addRol = [{
     name: 'departmentId'
 }]
 // add employee questions
-const addEmp = [{
-    type: 'input',
-    message: "What is the employee's first name?",
-    name: 'firstName'
-}, {
-    type: 'input',
-    message: "What is the employee's last name?",
-    name: 'lastName'
-}, {
-    type: 'number',
-    message: "What is the employee's role ID #?",
-    name: 'roleId'
-}, {
-    type: 'input',
-    message: "What is the employee's manager's ID #?",
-    name: 'managerId',
-    default: 'NULL'
-}]
+// const addEmp = [{
+//     type: 'input',
+//     message: "What is the employee's first name?",
+//     name: 'firstName'
+// }, {
+//     type: 'input',
+//     message: "What is the employee's last name?",
+//     name: 'lastName'
+// }, {
+//     type: 'number',
+//     message: "What is the employee's role ID #?",
+//     name: 'roleId'
+// }, {
+//     type: 'input',
+//     message: "What is the employee's manager's ID #?",
+//     name: 'managerId',
+//     default: 'NULL'
+// }]
 // update role questions
 const updateRol = [{
     type: 'number',
@@ -180,18 +180,52 @@ function addRole() {
 // add employee query function
 function addEmployee() {
     console.log('Add a new employee');
-    inquirer.prompt(addEmp)
+    //get all roles from database
+    db.query('SELECT * FROM role', function (err, results1){
+        if(err) throw err;
+    
+    inquirer.prompt([{
+        type: 'input',
+        message: "What is the employee's first name?",
+        name: 'firstName'
+    }, {
+        type: 'input',
+        message: "What is the employee's last name?",
+        name: 'lastName'
+    }, {
+        type: 'list',
+        message: "What is the employee's role?",
+        name: 'title',
+        choices: function(){
+            const roleArray = [];
+            for (let i = 0; i < results1.length; i++) {
+                roleArray.push(results1[i].title);
+            }
+            return roleArray;
+        }
+    }, {
+        type: 'input',
+        message: "What is the employee's manager's ID #?",
+        name: 'managerId',
+        default: 'NULL'
+    }])
         .then(function (data) {
-            console.log(data.firstName);
-            const sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ("${data.firstName}", "${data.lastName}", ${data.roleId}, ${data.managerId});`;
+            const roleQuery = `SELECT id FROM role WHERE title = "${data.title}"`;
+            db.query(roleQuery, (err, results) => {
+                if (err) throw err;
+                console.log(results);
+                console.log(results[0].id);
+            const sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ("${data.firstName}", "${data.lastName}", ${results[0].id}, ${data.managerId});`;
             db.query(sql, (err, results) => {
                 if (err) throw err;
                 console.log('------------');
                 console.log(`${data.firstName} ${data.lastName} added to the books`);
                 console.log('------------');
                 start();
+            })
         })
     })
+})
 };
 // update employee role function
 function updateRole() {
