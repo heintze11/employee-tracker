@@ -1,3 +1,4 @@
+-- Query templates
 -- department request
 SELECT * FROM departments;
 

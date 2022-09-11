@@ -150,10 +150,12 @@ function addDepartment() {
     inquirer.prompt(addDep)
         .then(function (data) {
             console.log(data.name);
-            const sql = "INSERT INTO departments (name) VALUES ('" + data.name + "');";
+            const sql = `INSERT INTO departments (name) VALUES ("${data.name}");`;
             db.query(sql, (err, results) => {
                 if (err) throw err;
-                console.log("1 record inserted");
+                console.log('------------');
+                console.log(`${data.name} department added to table`);
+                console.log('------------');
                 start();
         })
     })
@@ -167,7 +169,9 @@ function addRole() {
             const sql = `INSERT INTO role (title, salary, department_id) VALUES ("${data.title}", ${data.salary}, ${data.departmentId});`;
             db.query(sql, (err, results) => {
                 if (err) throw err;
-                console.log("1 record inserted");
+                console.log('------------');
+                console.log(`${data.title} role added to ${data.department} department`);
+                console.log('------------');
                 start();
         })
     })
@@ -181,7 +185,9 @@ function addEmployee() {
             const sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ("${data.firstName}", "${data.lastName}", ${data.roleId}, ${data.managerId});`;
             db.query(sql, (err, results) => {
                 if (err) throw err;
-                console.log("1 record inserted");
+                console.log('------------');
+                console.log(`${data.firstName} ${data.lastName} added to the books`);
+                console.log('------------');
                 start();
         })
     })
@@ -200,6 +206,8 @@ function updateRole() {
         })
     })
 };
+
+// Function to pull employees into array 
 
 // Need to fix - trying to exit sql when finished
 function finished() {
