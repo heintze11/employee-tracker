@@ -24,8 +24,12 @@ INSERT INTO role (title, salary, department_id) VALUES (data.title, data.salary,
 INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (data.firstName, data.lastName, data.roleId, data.managerId);
 
 -- change employee role
-UPDATE employees SET role_id = data.roleId WHERE id = data.employeeId;
+UPDATE employees SET role_id = ${data.roleId} WHERE id = ${results3[0].id};
 
 -- update role initial query
-SELECT first_name, last_name, role.title AS role, role.id AS role_id FROM employees JOIN role on role_id = role.id
- 
+SELECT CONCAT (first_name, " ",last_name) AS name, role.title AS role, role.id AS role_id FROM employees JOIN role on role_id = role.id;
+
+-- Update role employee query
+SELECT id FROM employees WHERE first_name = '${splitArray[0]}' AND last_name = '${splitArray[1]}';
+
+

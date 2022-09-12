@@ -199,9 +199,8 @@ function addEmployee() {
 // update employee role function
 function updateRole() {
     console.log('Update an employee role');
-    db.query('SELECT CONCAT (first_name, " ",last_name) AS name, role.title AS role, role.id AS role_id FROM employees JOIN role on role_id = role.id', function (err, results2){
+    db.query('SELECT CONCAT (first_name, " ",last_name) AS name, role.title AS role, role.id AS role_id FROM employees JOIN role on role_id = role.id;', function (err, results2){
         if(err) throw err;
-        console.log(results2);
         inquirer.prompt([{
         type: 'list',
         message: "What emplpoyee do you want to change the role for?",
@@ -211,7 +210,6 @@ function updateRole() {
             for (let i = 0; i < results2.length; i++) {
                 empArry.push(results2[i].name);
             }
-            console.log(empArry);
             return empArry;
         }
     }, {
@@ -222,12 +220,9 @@ function updateRole() {
         .then(function (data) {
             let splitString = (data.employee);
             const splitArray = splitString.split(" ");
-            console.log(splitArray);
-            const employeeQuery = `SELECT id FROM employees WHERE first_name = '${splitArray[0]}' AND last_name = '${splitArray[1]}'`;
-            console.log(employeeQuery);
+            const employeeQuery = `SELECT id FROM employees WHERE first_name = '${splitArray[0]}' AND last_name = '${splitArray[1]}';`;
             db.query(employeeQuery, (err, results3) => {
                 if (err) throw err;
-                console.log(results3[0].id);
             
             const sql = `UPDATE employees SET role_id = ${data.roleId} WHERE id = ${results3[0].id};`;
             db.query(sql, (err, results) => {
