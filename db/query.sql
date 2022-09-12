@@ -25,3 +25,7 @@ INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (data.
 
 -- change employee role
 UPDATE employees SET role_id = data.roleId WHERE id = data.employeeId;
+
+-- update role initial query
+SELECT first_name, last_name, role.title AS role, role.id AS role_id FROM employees JOIN role on role_id = role.id
+ 

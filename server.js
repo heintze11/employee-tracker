@@ -199,26 +199,47 @@ function addEmployee() {
 // update employee role function
 function updateRole() {
     console.log('Update an employee role');
-    inquirer.prompt([{
-        type: 'number',
-        message: "What is the employee's ID number?",
-        name: 'employeeId'
+    db.query('SELECT CONCAT (first_name, " ",last_name) AS name, role.title AS role, role.id AS role_id FROM employees JOIN role on role_id = role.id', function (err, results2){
+        if(err) throw err;
+        console.log(results2);
+        inquirer.prompt([{
+        type: 'list',
+        message: "What emplpoyee do you want to change the role for?",
+        name: 'employee',
+        choices: function(){
+            const empArry = [];
+            for (let i = 0; i < results2.length; i++) {
+                empArry.push(results2[i].name);
+            }
+            console.log(empArry);
+            return empArry;
+        }
     }, {
         type: 'number',
-        message: "What is the new employee's role number?",
+        message: "What is the new employee's role ID #?",
         name: 'roleId'
     }])
         .then(function (data) {
-            console.log(data.firstName);
-            const sql = `UPDATE employees SET role_id = ${data.roleId} WHERE id = ${data.employeeId};`;
+            let splitString = (data.employee);
+            const splitArray = splitString.split(" ");
+            console.log(splitArray);
+            const employeeQuery = `SELECT id FROM employees WHERE first_name = '${splitArray[0]}' AND last_name = '${splitArray[1]}'`;
+            console.log(employeeQuery);
+            db.query(employeeQuery, (err, results3) => {
+                if (err) throw err;
+                console.log(results3[0].id);
+            
+            const sql = `UPDATE employees SET role_id = ${data.roleId} WHERE id = ${results3[0].id};`;
             db.query(sql, (err, results) => {
                 if (err) throw err;
                 console.log('------------');
-                console.log(`Employee # ${data.employeeId} role changed to ${data.roleId}`);
+                console.log(`Employee ${data.employee} role changed to ${data.roleId}`);
                 console.log('------------');
                 start();
+            })
         })
     })
+})
 };
 
 // simple finished function - doesn't call inquirer again
