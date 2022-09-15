@@ -18,7 +18,10 @@ FROM employees e LEFT OUTER JOIN employees m ON e.manager_id = m.id JOIN role ON
 INSERT INTO departments (name) VALUES (data.name);
 
 -- add role
-INSERT INTO role (title, salary, department_id) VALUES (data.title, data.salary, data.departmentId);
+INSERT INTO role (title, salary, department_id) VALUES ("${data.title}", ${data.salary}, ${results2[0].id});
+
+-- add role inquier query
+SELECT id FROM departments WHERE name = "${data.department}"
 
 -- add employee
 INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (data.firstName, data.lastName, data.roleId, data.managerId);

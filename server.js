@@ -121,7 +121,6 @@ function addDepartment() {
     console.log('Add a new department');
     inquirer.prompt(addDep)
         .then(function (data) {
-            console.log(data.name);
             const sql = `INSERT INTO departments (name) VALUES ("${data.name}");`;
             db.query(sql, (err, results) => {
                 if (err) throw err;
@@ -135,18 +134,42 @@ function addDepartment() {
 // add role query function
 function addRole() {
     console.log('Add a new role');
-    inquirer.prompt(addRol)
+    let i;
+    db.query('SELECT * FROM departments', function (err, results1){
+        if(err) throw err;
+    inquirer.prompt([{
+        type: 'input',
+        message: 'What is the role title?',
+        name: 'title'
+    }, {
+        type: 'number',
+        message: 'What is the role salary?',
+        name: 'salary'
+    }, {
+        type: 'list',
+        message: 'What department is this role in?',
+        name: 'department',
+        choices: function(){
+            const roleArray = [];
+            for (i = 0; i < results1.length; i++) {
+                roleArray.push(results1[i].name);
+            }
+            return roleArray;
+        }
+    }])
         .then(function (data) {
-            console.log(data.title);
-            const sql = `INSERT INTO role (title, salary, department_id) VALUES ("${data.title}", ${data.salary}, ${data.departmentId});`;
+            db.query(`SELECT id FROM departments WHERE name = "${data.department}"`, (err, results2) => {
+            const sql = `INSERT INTO role (title, salary, department_id) VALUES ("${data.title}", ${data.salary}, ${results2[0].id});`;
             db.query(sql, (err, results) => {
                 if (err) throw err;
                 console.log('------------');
-                console.log(`${data.title} role added to ${data.departmentId} department`);
+                console.log(`${data.title} role added to ${data.department} department`);
                 console.log('------------');
                 start();
+            })
         })
     })
+})
 };
 // add employee query function
 function addEmployee() {
