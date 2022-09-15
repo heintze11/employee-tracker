@@ -97,137 +97,137 @@ function addDepartment() {
                 console.log(`${data.name} department added to table`);
                 console.log('------------');
                 start();
+            })
         })
-    })
 };
 // add role query function
 function addRole() {
     console.log('Add a new role');
     // query all departments to make the list dynamic
-    db.query('SELECT * FROM departments', function (err, results1){
-        if(err) throw err;
-    inquirer.prompt([{
-        type: 'input',
-        message: 'What is the role title?',
-        name: 'title'
-    }, {
-        type: 'number',
-        message: 'What is the role salary?',
-        name: 'salary'
-    }, {
-        type: 'list',
-        message: 'What department is this role in?',
-        name: 'department',
-        choices: function(){
-            const roleArray = [];
-            for (let i = 0; i < results1.length; i++) {
-                roleArray.push(results1[i].name);
+    db.query('SELECT * FROM departments', function (err, results1) {
+        if (err) throw err;
+        inquirer.prompt([{
+            type: 'input',
+            message: 'What is the role title?',
+            name: 'title'
+        }, {
+            type: 'number',
+            message: 'What is the role salary?',
+            name: 'salary'
+        }, {
+            type: 'list',
+            message: 'What department is this role in?',
+            name: 'department',
+            choices: function () {
+                const roleArray = [];
+                for (let i = 0; i < results1.length; i++) {
+                    roleArray.push(results1[i].name);
+                }
+                return roleArray;
             }
-            return roleArray;
-        }
-    }])
-        .then(function (data) {
-            db.query(`SELECT id FROM departments WHERE name = "${data.department}"`, (err, results2) => {
-            const sql = `INSERT INTO role (title, salary, department_id) VALUES ("${data.title}", ${data.salary}, ${results2[0].id});`;
-            db.query(sql, (err, results) => {
-                if (err) throw err;
-                console.log('------------');
-                console.log(`${data.title} role added to ${data.department} department`);
-                console.log('------------');
-                start();
+        }])
+            .then(function (data) {
+                db.query(`SELECT id FROM departments WHERE name = "${data.department}"`, (err, results2) => {
+                    const sql = `INSERT INTO role (title, salary, department_id) VALUES ("${data.title}", ${data.salary}, ${results2[0].id});`;
+                    db.query(sql, (err, results) => {
+                        if (err) throw err;
+                        console.log('------------');
+                        console.log(`${data.title} role added to ${data.department} department`);
+                        console.log('------------');
+                        start();
+                    })
+                })
             })
-        })
     })
-})
 };
 // add employee query function
 function addEmployee() {
     console.log('Add a new employee');
     //get all roles from database
-    db.query('SELECT * FROM role', function (err, results1){
-        if(err) throw err;
-    
-    inquirer.prompt([{
-        type: 'input',
-        message: "What is the employee's first name?",
-        name: 'firstName'
-    }, {
-        type: 'input',
-        message: "What is the employee's last name?",
-        name: 'lastName'
-    }, {
-        type: 'list',
-        message: "What is the employee's role?",
-        name: 'title',
-        choices: function(){
-            const roleArray = [];
-            for (let i = 0; i < results1.length; i++) {
-                roleArray.push(results1[i].title);
+    db.query('SELECT * FROM role', function (err, results1) {
+        if (err) throw err;
+
+        inquirer.prompt([{
+            type: 'input',
+            message: "What is the employee's first name?",
+            name: 'firstName'
+        }, {
+            type: 'input',
+            message: "What is the employee's last name?",
+            name: 'lastName'
+        }, {
+            type: 'list',
+            message: "What is the employee's role?",
+            name: 'title',
+            choices: function () {
+                const roleArray = [];
+                for (let i = 0; i < results1.length; i++) {
+                    roleArray.push(results1[i].title);
+                }
+                return roleArray;
             }
-            return roleArray;
-        }
-    }, {
-        type: 'input',
-        message: "What is the employee's manager's ID #?",
-        name: 'managerId',
-        default: 'NULL'
-    }])
-        .then(function (data) {
-            const roleQuery = `SELECT id FROM role WHERE title = "${data.title}"`;
-            db.query(roleQuery, (err, results) => {
-                if (err) throw err;
-            const sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ("${data.firstName}", "${data.lastName}", ${results[0].id}, ${data.managerId});`;
-            db.query(sql, (err, results) => {
-                if (err) throw err;
-                console.log('------------');
-                console.log(`${data.firstName} ${data.lastName} added to the books`);
-                console.log('------------');
-                start();
+        }, {
+            type: 'input',
+            message: "What is the employee's manager's ID #?",
+            name: 'managerId',
+            default: 'NULL'
+        }])
+            .then(function (data) {
+                const roleQuery = `SELECT id FROM role WHERE title = "${data.title}"`;
+                db.query(roleQuery, (err, results) => {
+                    if (err) throw err;
+                    const sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ("${data.firstName}", "${data.lastName}", ${results[0].id}, ${data.managerId});`;
+                    db.query(sql, (err, results) => {
+                        if (err) throw err;
+                        console.log('------------');
+                        console.log(`${data.firstName} ${data.lastName} added to the books`);
+                        console.log('------------');
+                        start();
+                    })
+                })
             })
-        })
     })
-})
 };
 // update employee role function
 function updateRole() {
     console.log('Update an employee role');
     // query to make the employee list dynamic
-    db.query('SELECT CONCAT (first_name, " ",last_name) AS name, role.title AS role, role.id AS role_id FROM employees JOIN role on role_id = role.id;', function (err, results2){
-        if(err) throw err;
+    db.query('SELECT CONCAT (first_name, " ",last_name) AS name, role.title AS role, role.id AS role_id FROM employees JOIN role on role_id = role.id;', function (err, results2) {
+        if (err) throw err;
         inquirer.prompt([{
-        type: 'list',
-        message: "What emplpoyee do you want to change the role for?",
-        name: 'employee',
-        choices: function(){
-            const empArry = [];
-            for (let i = 0; i < results2.length; i++) {
-                empArry.push(results2[i].name);
+            type: 'list',
+            message: "What emplpoyee do you want to change the role for?",
+            name: 'employee',
+            choices: function () {
+                const empArry = [];
+                for (let i = 0; i < results2.length; i++) {
+                    empArry.push(results2[i].name);
+                }
+                return empArry;
             }
-            return empArry;
-        }
-    }, {
-        type: 'number',
-        message: "What is the new employee's role ID #?",
-        name: 'roleId'
-    }])
-        .then(function (data) {
-            let splitString = (data.employee);
-            const splitArray = splitString.split(" ");
-            const employeeQuery = `SELECT id FROM employees WHERE first_name = '${splitArray[0]}' AND last_name = '${splitArray[1]}';`;
-            db.query(employeeQuery, (err, results3) => {
-                if (err) throw err;
-            
-            const sql = `UPDATE employees SET role_id = ${data.roleId} WHERE id = ${results3[0].id};`;
-            db.query(sql, (err, results) => {
-                if (err) throw err;
-                console.log('------------');
-                console.log(`Employee ${data.employee} role changed to ${data.roleId}`);
-                console.log('------------');
-                start();
+        }, {
+            type: 'number',
+            message: "What is the new employee's role ID #?",
+            name: 'roleId'
+        }])
+            .then(function (data) {
+                let splitString = (data.employee);
+                const splitArray = splitString.split(" ");
+                const employeeQuery = `SELECT id FROM employees WHERE first_name = '${splitArray[0]}' AND last_name = '${splitArray[1]}';`;
+                db.query(employeeQuery, (err, results3) => {
+                    if (err) throw err;
+
+                    const sql = `UPDATE employees SET role_id = ${data.roleId} WHERE id = ${results3[0].id};`;
+                    db.query(sql, (err, results) => {
+                        if (err) throw err;
+                        console.log('------------');
+                        console.log(`Employee ${data.employee} role changed to ${data.roleId}`);
+                        console.log('------------');
+                        start();
+                    })
+                })
             })
-        })
     })
-})
 };
 
 // simple finished function - doesn't call inquirer again
