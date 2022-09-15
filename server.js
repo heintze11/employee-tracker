@@ -1,13 +1,3 @@
-// Install dependencies
-// Express
-// Inquirer 8.2.4
-// mysql2
-// Console.table
-// Create Database
-// Seed Database
-// Use inquirer to select from query options
-// Use console.table to show results...?
-
 // dependencies
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
@@ -38,28 +28,7 @@ const addDep = [{
     message: 'What is the department name?',
     name: 'name'
 }]
-// add role questions
-const addRol = [{
-    type: 'input',
-    message: 'What is the role title?',
-    name: 'title'
-}, {
-    type: 'number',
-    message: 'What is the role salary?',
-    name: 'salary'
-}, {
-    type: 'number',
-    message: 'What is the department id?',
-    name: 'departmentId'
-}]
-// add employee questions
-// moved inside function to be dynamic
 
-// update role questions
-// moved inside function to be dynamic
-
-// inquire to determine next steps
-// connect options to queries
 function start() {
     inquirer.prompt(options)
         .then(function (data) {
@@ -134,7 +103,7 @@ function addDepartment() {
 // add role query function
 function addRole() {
     console.log('Add a new role');
-    let i;
+    // query all departments to make the list dynamic
     db.query('SELECT * FROM departments', function (err, results1){
         if(err) throw err;
     inquirer.prompt([{
@@ -151,7 +120,7 @@ function addRole() {
         name: 'department',
         choices: function(){
             const roleArray = [];
-            for (i = 0; i < results1.length; i++) {
+            for (let i = 0; i < results1.length; i++) {
                 roleArray.push(results1[i].name);
             }
             return roleArray;
@@ -222,6 +191,7 @@ function addEmployee() {
 // update employee role function
 function updateRole() {
     console.log('Update an employee role');
+    // query to make the employee list dynamic
     db.query('SELECT CONCAT (first_name, " ",last_name) AS name, role.title AS role, role.id AS role_id FROM employees JOIN role on role_id = role.id;', function (err, results2){
         if(err) throw err;
         inquirer.prompt([{
